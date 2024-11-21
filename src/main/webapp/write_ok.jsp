@@ -4,29 +4,20 @@
 <%@ page import="com.example.jsp_file.dao.BoardDAO" %>
 <%@ page import="com.example.jsp_file.bean.BoardVO" %>
 <%
-    com.example.jsp_file.dao.BoardDAO dao = new com.example.jsp_file.dao.BoardDAO();
-    com.example.jsp_file.bean.BoardVO post = new com.example.jsp_file.bean.BoardVO();
-
-    post.setTitle(request.getParameter("title"));
-    post.setWriter(request.getParameter("writer"));
-    post.setContent(request.getParameter("content"));
-
-    int result = dao.insertBoard(post);
-    if (result > 0) {
-        System.out.println("<h3>Post added!</h3>");
-    } else {
-        System.out.println("<h3>Post not added!</h3>");
-    }
-%>
-
-<%
     request.setCharacterEncoding("utf-8");
-    BoardDAO boardDAO = new BoardDAO();
-    FileUpload upload = new FileUpload();
-    BoardVO u = upload.uploadPhoto(request);
+    FileUpload fileUpload = new FileUpload();
+    BoardVO post = fileUpload.uploadFile(request);
 
-    int i = boardDAO.insertBoard(u);
+    BoardDAO dao = new BoardDAO();
+    int result = dao.insertBoard(post);
 %>
 
-<a href="list.jsp">Back to List</a>
+<div class="container">
+    <% if (result > 0) { %>
+    <h2>Post Added!</h2>
+    <% } else { %>
+    <h2>Post Not Added!</h2>
+    <% } %>
+    <a href="list.jsp" class="button">Back to List</a>
+</div>
 <%@ include file="bottom.jsp" %>

@@ -12,33 +12,29 @@ import java.util.List;
 public class BoardDAO {
     Connection conn = null;
     PreparedStatement stmt = null;
+    ResultSet rs = null;
 
-
-    String board_insert = "insert into board (title, writer, content) values (?,?,?)";
+    String board_insert = "INSERT INTO board (title, writer, content, filename) VALUES (?, ?, ?, ?)";
     String board_update = "update board set title=?, writer=?, content=? where seq=?";
     String board_delete = "delete from board where seq=?";
     String board_get = "select * from board where seq=?";
     String board_list = "select * from board order by seq desc";
+    String M_SELECT = "SELECT filename FROM board WHERE seq=?";
 
     public int insertBoard(BoardVO vo) {
         int result = 0;
         try {
             conn = JDBCUtil.getConnection();
-            if (conn == null) {
-                System.out.println("DB 연결 오류!");
-                return 0;
-            }
-
-            System.out.println("===> JDBC로 insertBoard() 기능 처리");
             stmt = conn.prepareStatement(board_insert);
             stmt.setString(1, vo.getTitle());
             stmt.setString(2, vo.getWriter());
             stmt.setString(3, vo.getContent());
+            stmt.setString(4, vo.getFilename());
             result = stmt.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            JDBCUtil.close(stmt, conn); // 연결 해제
+            JDBCUtil.close(stmt, conn);
         }
         return result;
     }
@@ -125,5 +121,23 @@ public class BoardDAO {
             JDBCUtil.close(stmt, conn);
         }
         return result;
+    }
+
+    public String getPhotoFilename (int seq) {
+        String filename = null;
+        try {
+            conn = JDBCUtil.getConnection();
+            stmt = conn.prepareStatement(M_SELECT);
+            stmt.setInt(1, seq);
+            rs = stmt.executeQuery();
+            if (rs.next()) {
+                filename = rs.getString("photo");
+            }
+            rs.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        System.out.println("===> JDBC로 getPhotoFilename() 기능 처리");
+        return filename;
     }
 }

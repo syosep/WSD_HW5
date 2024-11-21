@@ -8,6 +8,7 @@ public class BoardVO {
     private String writer;
     private String content;
     private int cnt;
+    private String filename;
     private Date regdate;
 
     public int getId() {
@@ -49,6 +50,10 @@ public class BoardVO {
     public void setCnt(int cnt) {
         this.cnt = cnt;
     }
+
+    public String getFilename() { return filename; }
+
+    public void setFilename(String filename) { this.filename = filename; }
 
     public Date getRegdate() {
         return regdate;

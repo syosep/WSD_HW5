@@ -25,9 +25,6 @@
         </thead>
         <tbody>
         <%
-            com.example.jsp_file.dao.BoardDAO dao = new com.example.jsp_file.dao.BoardDAO();
-            List<BoardVO> posts = dao.getBoardList();
-
             for (com.example.jsp_file.bean.BoardVO post : posts) {
         %>
         <tr>
@@ -35,6 +32,12 @@
             <td><%= post.getTitle() %></td>
             <td><%= post.getWriter() %></td>
             <td><%= post.getRegdate() %></td>
+            <td>
+                <% if (post.getFilename() != null) { %>
+                <a href="./upload/<%= post.getFilename() %>">View File</a> |
+                <a href="download.jsp?filename=<%= post.getFilename() %>">Download</a>
+                <% } %>
+            </td>
             <td class="actions">
                 <a href="view.jsp?seq=<%= post.getId() %>">View</a>
                 <a href="edit.jsp?seq=<%= post.getId() %>">Edit</a>
