@@ -1,4 +1,5 @@
 <%@ page import="com.example.jsp_file.bean.BoardVO" %>
+<%@ page import="com.example.jsp_file.dao.BoardDAO" %>
 <%@ page import="java.util.List" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ include file="top.jsp" %>
@@ -25,7 +26,10 @@
         </thead>
         <tbody>
         <%
-            for (com.example.jsp_file.bean.BoardVO post : posts) {
+            BoardDAO dao = new BoardDAO();
+            List<BoardVO> posts = dao.getBoardList(); // posts 변수 초기화
+
+            for (BoardVO post : posts) {
         %>
         <tr>
             <td><%= post.getId() %></td>
