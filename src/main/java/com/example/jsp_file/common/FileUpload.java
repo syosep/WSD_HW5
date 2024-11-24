@@ -13,23 +13,25 @@ import java.util.Date;
 public class FileUpload {
     private MultipartRequest multipartRequest;
 
+    /* 파일 업로드 메서드 */
     public FileVO uploadFile(HttpServletRequest request) {
-        int sizeLimit = 15 * 1024 * 1024;
-        String realPath = request.getServletContext().getRealPath("/upload");
+        int sizeLimit = 15 * 1024 * 1024; // 업로드 파일 크기 제한
+        String realPath = request.getServletContext().getRealPath("/upload"); // 업로드 파일 경로
 
         File dir = new File(realPath);
-        if (!dir.exists()) dir.mkdirs();
+        if (!dir.exists()) dir.mkdirs(); // 경로가 존재하지 않으면 폴더 생성
 
         String originalFilename = null;
         String savedFilename = null;
 
         try {
+            // 객체 생성
             multipartRequest = new MultipartRequest(
                     request,
                     realPath,
                     sizeLimit,
                     "UTF-8",
-                    new DefaultFileRenamePolicy()
+                    new DefaultFileRenamePolicy() // 파일명 중복 방지
             );
 
             originalFilename = multipartRequest.getFilesystemName("photo");
@@ -57,10 +59,12 @@ public class FileUpload {
         }
     }
 
+    /* 전달된 파라미터를 가져오는 MultipartRequest 객체 반환 */
     public MultipartRequest getMultipartRequest() {
         return multipartRequest;
     }
 
+    /* 저장된 파일 삭제 메서드 */
     public static boolean deleteFile(HttpServletRequest request, String filename) {
         String realPath = request.getServletContext().getRealPath("/upload");
         File file = new File(realPath, filename);
