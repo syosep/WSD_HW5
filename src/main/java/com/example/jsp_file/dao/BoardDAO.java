@@ -23,44 +23,46 @@ public class BoardDAO {
 
     public int insertBoard(BoardVO vo) {
         int result = 0;
-        try {
-            conn = JDBCUtil.getConnection();
-            stmt = conn.prepareStatement(board_insert);
+        String sql = "INSERT INTO board (title, writer, content, filename) VALUES (?, ?, ?, ?)";
+
+        try (Connection conn = JDBCUtil.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
             stmt.setString(1, vo.getTitle());
             stmt.setString(2, vo.getWriter());
             stmt.setString(3, vo.getContent());
             stmt.setString(4, vo.getFilename());
             result = stmt.executeUpdate();
+
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            JDBCUtil.close(stmt, conn);
         }
+
         return result;
     }
 
     public List<BoardVO> getBoardList() {
         List<BoardVO> boardList = new ArrayList<>();
-        try {
-            conn = JDBCUtil.getConnection();
-            stmt = conn.prepareStatement(board_list);
-            ResultSet rs = stmt.executeQuery();
+        String sql = "SELECT seq, title, writer, content, filename, regdate FROM board ORDER BY seq DESC";
+
+        try (Connection conn = JDBCUtil.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
                 BoardVO board = new BoardVO();
-                board.setId(rs.getInt("seq"));  // seq는 id로 매핑
+                board.setId(rs.getInt("seq"));
                 board.setTitle(rs.getString("title"));
                 board.setWriter(rs.getString("writer"));
                 board.setContent(rs.getString("content"));
-                board.setCnt(rs.getInt("cnt"));
+                board.setFilename(rs.getString("filename"));
                 board.setRegdate(rs.getTimestamp("regdate"));
                 boardList.add(board);
             }
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            JDBCUtil.close(stmt, conn);
         }
+
         return boardList;
     }
 

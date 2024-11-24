@@ -21,6 +21,7 @@
             <th>Title</th>
             <th>Writer</th>
             <th>Reg Date</th>
+            <th>File</th>
             <th>Actions</th>
         </tr>
         </thead>
@@ -38,8 +39,9 @@
             <td><%= post.getRegdate() %></td>
             <td>
                 <% if (post.getFilename() != null) { %>
-                <a href="./upload/<%= post.getFilename() %>">View File</a> |
-                <a href="download.jsp?filename=<%= post.getFilename() %>">Download</a>
+                <a href="./upload/<%= post.getFilename() %>"><%= post.getFilename() %></a>
+                <% } else { %>
+                No File
                 <% } %>
             </td>
             <td class="actions">

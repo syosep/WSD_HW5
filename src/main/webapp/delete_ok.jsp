@@ -1,16 +1,20 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ include file="top.jsp" %>
 <%@ page import="com.example.jsp_file.dao.BoardDAO"%>
 <%@ page import="com.example.jsp_file.common.FileUpload"%>
+<%@ include file="top.jsp" %>
 <%
     int seq = Integer.parseInt(request.getParameter("seq"));
-
     BoardDAO dao = new BoardDAO();
+
     String filename = dao.getPhotoFilename(seq);
+
     int result = dao.deleteBoard(seq);
 
     if (filename != null) {
-        FileUpload.deleteFile(request, filename);
+        boolean fileDeleted = FileUpload.deleteFile(request, filename);
+        if (!fileDeleted) {
+            System.out.println("파일 삭제 실패: " + filename);
+        }
     }
 %>
 <div class="container">
