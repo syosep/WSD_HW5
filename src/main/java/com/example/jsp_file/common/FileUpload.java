@@ -7,14 +7,11 @@ import com.oreilly.servlet.multipart.DefaultFileRenamePolicy;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class FileUpload {
-
     private MultipartRequest multipartRequest;
-
-    public MultipartRequest getMultipartRequest() {
-        return this.multipartRequest;
-    }
 
     public FileVO uploadFile(HttpServletRequest request) {
         int sizeLimit = 15 * 1024 * 1024;
@@ -23,8 +20,11 @@ public class FileUpload {
         File dir = new File(realPath);
         if (!dir.exists()) dir.mkdirs();
 
+        String originalFilename = null;
+        String savedFilename = null;
+
         try {
-            this.multipartRequest = new MultipartRequest(
+            multipartRequest = new MultipartRequest(
                     request,
                     realPath,
                     sizeLimit,
@@ -32,15 +32,33 @@ public class FileUpload {
                     new DefaultFileRenamePolicy()
             );
 
-            String filename = multipartRequest.getFilesystemName("photo");
+            originalFilename = multipartRequest.getFilesystemName("photo");
+
+            if (originalFilename != null) {
+                String extension = originalFilename.substring(originalFilename.lastIndexOf("."));
+                String baseName = originalFilename.substring(0, originalFilename.lastIndexOf("."));
+                String timestamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
+                savedFilename = baseName + "_" + timestamp + extension;
+
+                File oldFile = new File(realPath + "/" + originalFilename);
+                File newFile = new File(realPath + "/" + savedFilename);
+                if (oldFile.renameTo(newFile)) {
+                    System.out.println("파일명 변경 성공: " + savedFilename);
+                }
+            }
+
             String title = multipartRequest.getParameter("title");
 
-            return new FileVO(title, filename);
+            return new FileVO(title, savedFilename);
         } catch (IOException e) {
-            System.out.println("File upload error!");
+            System.out.println("업로드 중 오류 발생!");
             e.printStackTrace();
             return null;
         }
+    }
+
+    public MultipartRequest getMultipartRequest() {
+        return multipartRequest;
     }
 
     public static boolean deleteFile(HttpServletRequest request, String filename) {

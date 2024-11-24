@@ -10,9 +10,9 @@
     FileUpload fileUpload = new FileUpload();
     FileVO fileVO = fileUpload.uploadFile(request);
 
-    if (fileVO == null || fileVO.getFilename() == null) {
+    if (fileVO == null) {
         System.out.println("File upload failed or no file uploaded.");
-        fileVO = new FileVO(request.getParameter("title"), null);
+        fileVO = new FileVO("No Title", null);
     }
 
     BoardVO post = new BoardVO();

@@ -32,7 +32,7 @@
                 <td>Current File:</td>
                 <td>
                     <% if (post.getFilename() != null && !post.getFilename().isEmpty()) { %>
-                    <a href="./upload/<%= post.getFilename() %>"><%= post.getFilename() %></a>
+                    <a href="./upload/<%= post.getFilename() %>"><%= post.getFilename() %></a> <!-- 기존 파일 링크 -->
                     <input type="checkbox" name="deleteFile" value="true" /> Delete this file
                     <% } else { %>
                     No file uploaded
